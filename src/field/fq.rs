@@ -32,7 +32,7 @@ impl ops::Add<Fq> for Fq {
     type Output = Fq;
     fn add(self, rhs: Fq) -> Self::Output {
         assert_eq!(self.field_modulus, rhs.field_modulus, "Field modulus of both Fq mismatch");
-        println!("Fq - ({:?}) + Fq - ({:?})", self, rhs);
+        // println!("Fq - ({:?}) + Fq - ({:?})", self, rhs);
         Fq::fq(self.field_modulus.clone(), (self.value + rhs.value) % self.field_modulus.clone())
     }
 }
@@ -41,7 +41,7 @@ impl ops::Sub<Fq> for Fq {
     type Output = Fq;
     fn sub(self, rhs: Fq) -> Self::Output {
         assert_eq!(self.field_modulus, rhs.field_modulus, "Field modulus of both Fq mismatch");
-        println!("Fq - ({:?}) - Fq - ({:?})", self, rhs);
+        // println!("Fq - ({:?}) - Fq - ({:?})", self, rhs);
         Fq::fq(self.field_modulus.clone(), (self.value - rhs.value) % self.field_modulus.clone())
     }
 }
@@ -50,7 +50,7 @@ impl ops::Mul<Fq> for Fq {
     type Output = Fq;
     fn mul(self, rhs: Fq) -> Self::Output {
         assert_eq!(self.field_modulus, rhs.field_modulus, "Field modulus of both Fq mismatch");
-        println!("Fq - ({:?}) * Fq - ({:?})", self, rhs);
+        // println!("Fq - ({:?}) * Fq - ({:?})", self, rhs);
         Fq::fq(self.field_modulus.clone(), (self.value * rhs.value) % self.field_modulus.clone())
     }
 }
@@ -59,7 +59,7 @@ impl ops::Div<Fq> for Fq {
     type Output = Fq;
     fn div(self, rhs: Fq) -> Self::Output {
         assert_eq!(self.field_modulus, rhs.field_modulus, "Field modulus of both Fq mismatch");
-        println!("Fq - ({:?}) / Fq - ({:?})", self, rhs);
+        // println!("Fq - ({:?}) / Fq - ({:?})", self, rhs);
         Fq::fq(self.field_modulus.clone(), (self.value * mod_inverse(rhs.value.clone(), self.field_modulus.clone()))%self.field_modulus.clone())
     }
 }

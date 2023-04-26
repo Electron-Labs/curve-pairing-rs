@@ -5,9 +5,9 @@ use crate::field::fq::Fq;
 #[derive(Debug, Clone)]
 pub struct Fq2 {
     // non_residue refers to a non-quadratic residue in the base field Fq. A non-quadratic residue is an element of Fq that is not a square (i.e., not the square of any other element in Fq). It is used as a coefficient to compute the multiplication of elements in the field extension Fq2.
-    non_residue: Fq,
-    value: [Fq; 2],
-    forbenius_coeff_c1: [Fq; 2]
+    pub non_residue: Fq,
+    pub value: [Fq; 2],
+    pub forbenius_coeff_c1: [Fq; 2]
 }
 
 impl Fq2 {
@@ -63,6 +63,24 @@ impl Fq2 {
             ],
             forbenius_coeff_c1: self.forbenius_coeff_c1
         }
+    }
+
+    pub fn mul_scalar(self, base: Fq) -> Self {
+        let mut q = Fq2::zero(self.non_residue.clone(), self.value[0].clone().field_modulus, self.forbenius_coeff_c1.clone());
+        let d = base.clone();
+        let r = self.clone();
+        let mut found_one = false;
+        let d_bit_len = d.value.bits();
+        for i in (0..d_bit_len).rev() {
+            if found_one {
+                q = q.clone() + q.clone();
+            }
+            if d.value.bit(i) {
+                found_one = true;
+                q = q+r.clone();
+            }
+        }
+        return q;
     }
 }
 
@@ -275,5 +293,22 @@ mod tests {
         a = a.forbenius_map(3);
         let res = Fq2::fq2([Fq::fq(field_modulus.clone(), BigInt::from(2)),Fq::fq(field_modulus, BigInt::from_str("21888242871839275222246405745257275088696311157297823662689037894645226208580").unwrap())], non_residue, forbenius_coeffs_c1);
         assert_eq!(a, res)
+    }
+
+    #[test]
+    fn test_fq2_mul_scalar() {
+        let field_modulus = BigInt::from(17);
+        let non_residue = Fq::fq(field_modulus.clone(), BigInt::from(16));
+        let forbenius_coeffs_c1 = [Fq::fq(field_modulus.clone(),BigInt::from(1)),
+            Fq::fq(field_modulus.clone(),BigInt::from_str("21888242871839275222246405745257275088696311157297823662689037894645226208582").unwrap())];
+        let mut a = Fq2::fq2(
+            [Fq::fq(field_modulus.clone(), BigInt::from(2)), Fq::fq(field_modulus.clone(), BigInt::from(3))],
+            non_residue.clone(),
+            forbenius_coeffs_c1.clone()
+        );
+        let b = Fq::fq(field_modulus.clone(), BigInt::from(3));
+        let c = a.mul_scalar(b.clone());
+        let res = Fq2::fq2([Fq::fq(field_modulus.clone(), BigInt::from(6)),Fq::fq(field_modulus, BigInt::from(9))], non_residue, forbenius_coeffs_c1);
+        assert_eq!(c, res);
     }
 }

@@ -1,5 +1,5 @@
-mod fq;
-mod utils;
-mod fq2;
-mod fq6;
-mod fq12;
+pub mod fq;
+pub mod utils;
+pub mod fq2;
+pub mod fq6;
+pub mod fq12;
